@@ -11,8 +11,10 @@ cl.warning('Warning! Security update delayed!')
 cl.error('Error! Failed to write file!')
 cl.info('Server listening on port 8888.')
 cl.progress('Downloading package, please wait...')
-cl.question('A new version is present, would you like to update? (Y/N)')
+choice = cl.question('A new version is present, would you like to update? (Y/N)')
 ```
+
+## Features
 
 - Provides awesome colorful labels in console. (Inspired by [@UltimateHackers](https://github.com/UltimateHackers))
 - Designed for message display and interaction in automated scripts (e.g. test scripts, installation scripts and hacker tools).
@@ -20,6 +22,12 @@ cl.question('A new version is present, would you like to update? (Y/N)')
 - Compatible. (Based on [colorama](https://github.com/tartley/colorama))
   - Python 2 & 3
   - Windows & Unix-like Systems
+
+## installation
+
+```
+pip install colorlabels
+```
 
 NOTE: This project is currently under construction.
 
