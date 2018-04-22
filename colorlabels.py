@@ -27,8 +27,11 @@ BRIGHT_BLUE = color_code(94)
 BRIGHT_MAGENTA = color_code(95)
 BRIGHT_CYAN = color_code(96)
 BRIGHT_WHITE = color_code(97)
-COLOR_RESET = color_code(0) # Reset color settings.
+COLOR_RESET = color_code(0) # Reset color settings in console.
 COLOR_NONE = '' # Does not change color.
+
+# Names of all labels.
+all_labels = ('section', 'item', 'success', 'warning', 'error', 'info', 'progress', 'question', 'input', 'password')
 
 # Default colors for each kind of label.
 default_section_color = BRIGHT_MAGENTA
@@ -43,16 +46,8 @@ default_input_color = BRIGHT_CYAN
 default_password_color = BRIGHT_CYAN
 
 # Custom settings of colors for each kind of label.
-custom_section_color = None
-custom_item_color = None
-custom_success_color = None
-custom_warning_color = None
-custom_error_color = None
-custom_info_color = None
-custom_progress_color = None
-custom_question_color = None
-custom_input_color = None
-custom_password_color = None
+for _label_name in all_labels:
+    globals()['custom_%s_color' % (_label_name)] = None
 
 # Default and custom color span settings.
 #    0 -> no color
@@ -77,67 +72,182 @@ default_password_mark = '>'
 # Default header pattern.
 header_pattern = '[%s]'
 
+
+# Internal functions.
+
+# Check whether the color is valid.
+def _check_color(color):
+    if not isinstance(color, str):
+        raise TypeError("'color' should be a string")
+
+# Check whether color span is valid.
+def _check_color_span(color_span):
+    if not isinstance(color_span, int):
+        raise TypeError("'color_span' should be an integer")
+
+    if color_span not in (0, 1, 2, 3):
+        raise ValueError("'color_span' should be one of 0, 1, 2 or 3")
+
+# If parameter is present, check whether it is a string, and set global config with the given key.
+def _check_str_and_config_if_present(key, kwargs):
+    if key in kwargs:
+        value = kwargs[key]
+
+        if not isinstance(value, str):
+            raise TypeError("'%s' should be a string" % (key))
+
+        globals()['custom_' + key] = value
+
+# Remove a key in a dict if that key exists.
+def _dict_remove_key_if_present(d, k):
+    if k in d:
+        d.pop(k)
+
+# Choose the value which will take effect from a list of layered settings.
+def _layered_choice(*args):
+    if not args:
+        raise ValueError('should give at least one choice')
+
+    # Choose the first value which is not None.
+    for arg in args:
+        if arg is not None:
+            return arg
+
+    return None
+
+# Print a string to stdout without appending '\n' and flush stdout.
 def _inline_write(s):
     sys.stdout.write(s)
     sys.stdout.flush()
 
-def _print_label(color, mark, msg, newline=True, reset=True):
-    out_string = color + header_pattern % mark + ' ' + str(msg) + (COLOR_RESET if reset else COLOR_NONE)
+# Display a generic message label.
+def _print_label(color, mark, msg, newline=True, reset=True, **kwargs):
+    _check_color(color)
+
+    color_span = _layered_choice(kwargs.get('color_span'), custom_color_span, default_color_span)
+    _check_color_span(color_span)
+
+    if color_span == 0: # No color.
+        out_string = header_pattern % mark + ' ' + str(msg)
+    elif color_span == 1: # Color the mark.
+        out_string = header_pattern % (color + mark + COLOR_RESET) + ' ' + str(msg)
+    elif color_span == 2: # Color the header.
+        out_string = color + header_pattern % mark + COLOR_RESET + ' ' + str(msg)
+    else: # Color the whole line.
+        out_string = color + header_pattern % mark + ' ' + str(msg) + (COLOR_RESET if reset else COLOR_NONE)
 
     if newline:
         print(out_string)
     else:
         _inline_write(out_string)
 
-def _input_label(color, mark, msg):
-    _print_label(color, mark, msg, newline=False, reset=False)
+# Display a generic input label.
+def _input_label(color, mark, msg, **kwargs):
+    _print_label(color, mark, msg, newline=False, reset=False, **kwargs)
 
     try:
         input_data = _input()
     finally:
-        _inline_write(COLOR_RESET)
+        _inline_write(COLOR_RESET) # Ensure color reset.
 
     return input_data
 
-def section(msg):
+
+# Public functions that users can import.
+
+def config(**kwargs):
+    '''Set up global configuration settings.'''
+
+    # Color span configuration.
+    if 'color_span' in kwargs:
+        color_span = kwargs['color_span']
+        _check_color_span(color_span)
+        global custom_color_span
+        custom_color_span = color_span
+
+    # Label colors configuration.
+    for label in all_labels:
+        _check_str_and_config_if_present(label + '_color', kwargs)
+
+def section(msg, **kwargs):
     '''Display a section label.'''
-    _print_label(default_section_color, default_section_mark, msg)
 
-def item(msg):
+    color = _layered_choice(kwargs.get('color'), custom_section_color, default_section_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    _print_label(color, default_section_mark, msg, **kwargs)
+
+def item(msg, **kwargs):
     '''Display an item label.'''
-    _print_label(default_item_color, default_item_mark, msg)
 
-def success(msg):
+    color = _layered_choice(kwargs.get('color'), custom_item_color, default_item_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    _print_label(color, default_item_mark, msg, **kwargs)
+
+def success(msg, **kwargs):
     '''Display a success label.'''
-    _print_label(default_success_color, default_success_mark, msg)
 
-def warning(msg):
+    color = _layered_choice(kwargs.get('color'), custom_success_color, default_success_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    _print_label(color, default_success_mark, msg, **kwargs)
+
+def warning(msg, **kwargs):
     '''Display a warning label.'''
-    _print_label(default_warning_color, default_warning_mark, msg)
 
-def error(msg):
+    color = _layered_choice(kwargs.get('color'), custom_warning_color, default_warning_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    _print_label(color, default_warning_mark, msg, **kwargs)
+
+def error(msg, **kwargs):
     '''Display an error label.'''
-    _print_label(default_error_color, default_error_mark, msg)
 
-def info(msg):
+    color = _layered_choice(kwargs.get('color'), custom_error_color, default_error_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    _print_label(color, default_error_mark, msg, **kwargs)
+
+def info(msg, **kwargs):
     '''Display an info label.'''
-    _print_label(default_info_color, default_info_mark, msg)
 
-def progress(msg):
+    color = _layered_choice(kwargs.get('color'), custom_info_color, default_info_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    _print_label(color, default_info_mark, msg, **kwargs)
+
+def progress(msg, **kwargs):
     '''Display a progress label.'''
-    _print_label(default_progress_color, default_progress_mark, msg)
 
-def question(msg):
+    color = _layered_choice(kwargs.get('color'), custom_progress_color, default_progress_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    _print_label(color, default_progress_mark, msg, **kwargs)
+
+def question(msg, **kwargs):
     '''Display a question label and ask for user input.'''
-    return _input_label(default_question_color, default_question_mark, msg)
 
-def input(msg):
+    color = _layered_choice(kwargs.get('color'), custom_question_color, default_question_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    return _input_label(color, default_question_mark, msg, **kwargs)
+
+def input(msg, **kwargs):
     '''Display an input label and ask for user input.'''
-    return _input_label(default_input_color, default_input_mark, msg)
 
-def password(msg):
+    color = _layered_choice(kwargs.get('color'), custom_input_color, default_input_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    return _input_label(color, default_input_mark, msg, **kwargs)
+
+def password(msg, **kwargs):
     '''Display a password label and ask for user input.'''
-    _print_label(default_password_color, default_password_mark, msg, newline=False)
+
+    color = _layered_choice(kwargs.get('color'), custom_password_color, default_password_color)
+    _dict_remove_key_if_present(kwargs, 'color')
+
+    _print_label(color, default_password_mark, msg, newline=False, **kwargs)
     return getpass.getpass('')
 
 # Initialize colorama.
