@@ -19,6 +19,7 @@ choice = cl.question('A new version is present, would you like to update? (Y/N)'
 - Provides semantic and colorful labels in console. (Inspired by [@UltimateHackers](https://github.com/UltimateHackers))
 - Designed for message display and interaction in automated scripts (e.g. test scripts, installation scripts and hacker tools).
 - Easy to use.
+- Customizable.
 - Compatible. (Based on [colorama](https://github.com/tartley/colorama))
   - Windows & Unix-like Systems
   - Python 2 & 3
@@ -29,9 +30,10 @@ choice = cl.question('A new version is present, would you like to update? (Y/N)'
 pip install colorlabels
 ```
 
-NOTE: This project is currently under construction.
+## Documentation
 
-TODO:
+Coming soon...
+
+## TODO
 
 - [ ] Various kinds of progress animation.
-- [ ] To be more customizable.
