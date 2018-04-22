@@ -1,8 +1,8 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='colorlabels',
-    version='0.2.0',
+    version='0.2.1',
     description='Provides semantic and colorful labels in console. Designed for message display and interaction in automated scripts.',
     long_description='For more information, goto https://github.com/gousaiyang/colorlabels.',
     url='https://github.com/gousaiyang/colorlabels',

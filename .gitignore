@@ -1,4 +1,6 @@
 __pycache__
 *.pyc
-/dist
+/build/
+/dist/
+/*.egg-info/
 /MANIFEST
