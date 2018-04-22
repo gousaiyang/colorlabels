@@ -2,12 +2,12 @@ from distutils.core import setup
 
 setup(
     name='colorlabels',
-    version='0.1.1',
-    description='Provides awesome colorful labels in console. Designed for message display and interaction in automated scripts.',
+    version='0.2.0',
+    description='Provides semantic and colorful labels in console. Designed for message display and interaction in automated scripts.',
     long_description='For more information, goto https://github.com/gousaiyang/colorlabels.',
     url='https://github.com/gousaiyang/colorlabels',
-    author = 'Saiyang Gou',
-    author_email = 'gousaiyang223@gmail.com',
+    author='Saiyang Gou',
+    author_email='gousaiyang223@gmail.com',
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
