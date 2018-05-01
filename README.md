@@ -11,6 +11,7 @@ cl.warning('Warning! Security update delayed!')
 cl.error('Error! Failed to write file!')
 cl.info('Server listening on port 8888.')
 cl.progress('Downloading package, please wait...')
+cl.plain('Nothing interesting.')
 choice = cl.question('A new version is present, would you like to update? (Y/N)')
 ```
 

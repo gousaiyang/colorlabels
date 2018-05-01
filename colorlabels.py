@@ -31,7 +31,7 @@ COLOR_RESET = color_code(0) # Reset color settings in console.
 COLOR_NONE = '' # Does not change color.
 
 # Names of all labels.
-all_labels = ('section', 'item', 'success', 'warning', 'error', 'info', 'progress', 'question', 'input', 'password')
+all_labels = ('section', 'item', 'success', 'warning', 'error', 'info', 'progress', 'plain', 'question', 'input', 'password')
 
 # Default colors for each kind of label.
 default_section_color = BRIGHT_MAGENTA
@@ -41,6 +41,7 @@ default_warning_color = BRIGHT_YELLOW
 default_error_color = BRIGHT_RED
 default_info_color = BRIGHT_CYAN
 default_progress_color = BRIGHT_CYAN
+default_plain_color = COLOR_NONE
 default_question_color = BRIGHT_CYAN
 default_input_color = BRIGHT_CYAN
 default_password_color = BRIGHT_CYAN
@@ -65,6 +66,7 @@ default_warning_mark = '!'
 default_error_mark = '-'
 default_info_mark = 'i'
 default_progress_mark = '='
+default_plain_mark = '*'
 default_question_mark = '?'
 default_input_mark = '>'
 default_password_mark = '>'
@@ -265,6 +267,16 @@ def progress(msg, **kwargs):
 
     color = _layered_choice(kwargs.get('color'), custom_progress_color, default_progress_color)
     mark = _layered_choice(kwargs.get('mark'), custom_progress_mark, default_progress_mark)
+    _dict_remove_key_if_present(kwargs, 'color')
+    _dict_remove_key_if_present(kwargs, 'mark')
+
+    _print_label(color, mark, msg, **kwargs)
+
+def plain(msg, **kwargs):
+    '''Display a plain label.'''
+
+    color = _layered_choice(kwargs.get('color'), custom_plain_color, default_plain_color)
+    mark = _layered_choice(kwargs.get('mark'), custom_plain_mark, default_plain_mark)
     _dict_remove_key_if_present(kwargs, 'color')
     _dict_remove_key_if_present(kwargs, 'mark')
 

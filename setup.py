@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='colorlabels',
-    version='0.2.1',
+    version='0.3.0',
     description='Provides semantic and colorful labels in console. Designed for message display and interaction in automated scripts.',
     long_description='For more information, goto https://github.com/gousaiyang/colorlabels.',
     url='https://github.com/gousaiyang/colorlabels',
@@ -10,7 +10,7 @@ setup(
     author_email='gousaiyang223@gmail.com',
     license='MIT',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',

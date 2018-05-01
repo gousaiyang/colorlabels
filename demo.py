@@ -28,6 +28,7 @@ def overview():
     cl.error('Error! Failed to write file!')
     cl.info('Server listening on port 8888.')
     cl.progress('Downloading package, please wait...')
+    cl.plain('Nothing interesting.')
     cl.question('A new version is present, would you like to update? (Y/N)')
 
 def demo1():
@@ -94,7 +95,7 @@ def main():
             elif option == 3:
                 demo2()
             else:
-                cl.info('Bye!')
+                cl.plain('Bye!')
                 break
 
             print()
