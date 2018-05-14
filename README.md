@@ -1,10 +1,18 @@
 # colorlabels
 
+[![PyPI - Downloads](http://pepy.tech/badge/colorlabels)](http://pepy.tech/count/colorlabels)
+[![PyPI - Version](https://img.shields.io/pypi/v/colorlabels.svg)](https://pypi.org/project/colorlabels)
+[![PyPI - Format](https://img.shields.io/pypi/format/colorlabels.svg)](https://pypi.org/project/colorlabels)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/colorlabels.svg)](https://pypi.org/project/colorlabels)
+[![PyPI - Status](https://img.shields.io/pypi/status/colorlabels.svg)](https://pypi.org/project/colorlabels)
+![License](https://img.shields.io/github/license/gousaiyang/colorlabels.svg)
+
+`colorlabels` is a console message display library for Python. Equipped with various kinds of colorful and semantic labels, it is tailored for message display and interaction in automated scripts (e.g. test scripts, installation scripts and hacker tools).
+
 ## Demo
 
-![](img/overview.png)
-
-![](img/animations.gif)
+<p><div align="center"><img src="img/overview.png"/></div></p>
+<p><div align="center"><img src="img/animations.gif"/></div></p>
 
 ```python
 import colorlabels as cl
@@ -30,14 +38,12 @@ with cl.progress('Downloading ', mode=cl.PROGRESS_DETERMINATE) as p:
 
 ## Features
 
-- Provides semantic and colorful labels in console. (Inspired by [@UltimateHackers](https://github.com/UltimateHackers))
-- Designed for message display and interaction in automated scripts (e.g. test scripts, installation scripts and hacker tools).
-- Various kinds of progress animations.
+- Various kinds of labels and progress animations. Colorful and semantic.
 - Easy to use.
 - Customizable.
-- Compatible. (Based on [colorama](https://github.com/tartley/colorama))
-  - Windows & Unix-like Systems
-  - Python 2 & 3
+- Compatible.
+  - Works on Unix-like Systems & Windows. (Based on [colorama](https://github.com/tartley/colorama))
+  - Works on both Python 2 & 3.
 
 ## Installation
 
