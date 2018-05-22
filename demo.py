@@ -68,14 +68,22 @@ def demo1():
 
     cl.info('Test program started.')
 
-    time.sleep(1)
+    with cl.progress('Running test case 1...', cl.PROGRESS_SPIN, erase=True):
+        time.sleep(3)
     cl.success('Test case 1: Passed')
-    time.sleep(1)
+
+    with cl.progress('Running test case 2...', cl.PROGRESS_SPIN, erase=True):
+        time.sleep(3)
     cl.success('Test case 2: Passed')
-    time.sleep(1)
+
+    with cl.progress('Running test case 3...', cl.PROGRESS_SPIN, erase=True):
+        time.sleep(3)
     cl.success('Test case 3: Passed')
-    time.sleep(1)
+
+    with cl.progress('Running test case 4...', cl.PROGRESS_SPIN, erase=True):
+        time.sleep(3)
     cl.error('Test case 4: Failed')
+
     cl.info('Input: 1111')
     cl.info('Expected output: 2222')
     cl.info('Got: 3333')

@@ -15,6 +15,7 @@
 <p><div align="center"><img src="img/animations.gif"/></div></p>
 
 ```python
+import time
 import colorlabels as cl
 
 cl.section('Overview of Labels')

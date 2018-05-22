@@ -98,26 +98,30 @@ PROGRESS_DETERMINATE = 4
 default_progress_config = {
     PROGRESS_SPIN: {
         'position': 'mark',
-        'interval': 0.1
+        'interval': 0.1,
+        'erase': False
     },
     PROGRESS_EXPAND: {
         'char': '.',
         'width': 3,
-        'interval': 1
+        'interval': 1,
+        'erase': False
     },
     PROGRESS_MOVE: {
         'char': '.',
         'num': 3,
         'width': 12,
         'style': 'loop',
-        'interval': 0.1
+        'interval': 0.1,
+        'erase': False
     },
     PROGRESS_DETERMINATE: {
         'char_done': '=',
         'char_head': '>',
         'char_undone': ' ',
         'width': 40,
-        'cleanup': False
+        'cleanup': False,
+        'erase': False
     }
 }
 
@@ -259,6 +263,25 @@ def _input_label(color, mark, msg, **kwargs):
 
     return input_data
 
+# Calculate width of a generic message label.
+def _get_label_width(mark, msg, **kwargs):
+    show_header = _layered_choice(kwargs.get('show_header'), custom_show_header, default_show_header)
+    msg = str(msg)
+
+    _check_mark(mark)
+
+    if show_header:
+        return len(header_pattern % mark + ' ' + msg)
+    else:
+        return len(msg)
+
+# Perform the final print of a progress label.
+def _progress_final(color, mark, msg, **kwargs):
+    if kwargs['erase']:
+        _inline_write(' ' * _get_label_width(mark, msg, **kwargs) + '\r')
+    else:
+        _print_label(color, mark, msg, **kwargs)
+
 # Thread for progress animations in indeterminate modes.
 # We should take care of clearing excessive characters.
 def _progress_print_thread(label, **kwargs):
@@ -307,13 +330,13 @@ def _progress_print_thread(label, **kwargs):
 
     if label.mode == PROGRESS_SPIN:
         if kwargs['position'] == 'mark':
-            _print_label(label.color, label.mark, msg, **kwargs)
+            _progress_final(label.color, label.mark, msg, **kwargs)
         else:
-            _print_label(label.color, label.mark, msg + ' ', **kwargs)
+            _progress_final(label.color, label.mark, msg + ' ', **kwargs)
     elif label.mode == PROGRESS_EXPAND:
-        _print_label(label.color, label.mark, msg + ' ' * kwargs['width'], **kwargs)
+        _progress_final(label.color, label.mark, msg + ' ' * kwargs['width'], **kwargs)
     elif label.mode == PROGRESS_MOVE:
-        _print_label(label.color, label.mark, msg + ' ' * (kwargs['width'] + 2), **kwargs)
+        _progress_final(label.color, label.mark, msg + ' ' * (kwargs['width'] + 2), **kwargs)
 
 class ProgressLabel:
     def __init__(self, mode, color, mark, msg, **kwargs):
@@ -412,16 +435,15 @@ class ProgressLabel:
                 self.stopped = True
                 self.print_thread.join()
         elif self.mode == PROGRESS_DETERMINATE:
-            if self.config['cleanup']:
+            if not self.config['erase'] and not self.config['cleanup']:
+                _inline_write('\n')
+            else:
                 cleanup_len = self.last_text_len
                 if self.config['width']:
                     cleanup_len += self.config['width'] + 2
 
                 sys.stdout.write('\r')
-                _print_label(self.color, self.mark, str(self.msg) + ' ' * cleanup_len, **self.config)
-            else:
-                _inline_write('\n')
-
+                _progress_final(self.color, self.mark, str(self.msg) + ' ' * cleanup_len, **self.config)
 
 # Public functions that users are supposed to call.
 
