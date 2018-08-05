@@ -11,9 +11,11 @@ PY2 = sys.version_info[0] < 3
 _input = raw_input if PY2 else input
 _main_thread = threading.current_thread()
 
+
 def color_code(color_number):
     '''Generate an ANSI escape sequence with the given color number.'''
     return '\033[' + str(color_number) + 'm'
+
 
 # Standard colors.
 BLACK = color_code(30)
@@ -32,8 +34,8 @@ BRIGHT_BLUE = color_code(94)
 BRIGHT_MAGENTA = color_code(95)
 BRIGHT_CYAN = color_code(96)
 BRIGHT_WHITE = color_code(97)
-COLOR_RESET = color_code(0) # Reset color settings in console.
-COLOR_NONE = '' # Does not change color.
+COLOR_RESET = color_code(0)  # Reset color settings in console.
+COLOR_NONE = ''  # Does not change color.
 
 # Names of all labels.
 all_labels = ('section', 'item', 'success', 'warning', 'error', 'info', 'progress', 'plain', 'question', 'input', 'password')
@@ -125,12 +127,14 @@ default_progress_config = {
     }
 }
 
+
 # Internal functions.
 
 # Check whether the color is valid.
 def _check_color(color):
     if not isinstance(color, str):
         raise TypeError("'color' should be a string")
+
 
 # Check whether color span is valid.
 def _check_color_span(color_span):
@@ -140,15 +144,18 @@ def _check_color_span(color_span):
     if color_span not in (0, 1, 2, 3):
         raise ValueError("'color_span' should be one of 0, 1, 2 or 3")
 
+
 # Check whether the mark is valid.
 def _check_mark(mark):
     if not isinstance(mark, str):
         raise TypeError("'mark' should be a string")
 
+
 # Check whether progress mode is valid.
 def _check_progress_mode(mode):
     if mode not in (PROGRESS_STATIC, PROGRESS_SPIN, PROGRESS_EXPAND, PROGRESS_MOVE, PROGRESS_DETERMINATE):
         raise ValueError('invalid progress mode')
+
 
 # Check whether a value is one of the acceptable values.
 def _check_value_in_list(value, field, valuelist):
@@ -158,6 +165,7 @@ def _check_value_in_list(value, field, valuelist):
     if value not in valuelist:
         raise ValueError("'%s' should be %s or %r" % (field, ', '.join(map(repr, valuelist[:-1])), valuelist[-1]))
 
+
 # Check whether a value is a positive number.
 def _check_positive_number(value, field):
     if not isinstance(value, (int, float)):
@@ -165,6 +173,7 @@ def _check_positive_number(value, field):
 
     if value <= 0:
         raise ValueError("'%s' should be a positive number" % field)
+
 
 # Check whether a value is a character.
 def _check_character(value, field):
@@ -174,6 +183,7 @@ def _check_character(value, field):
     if len(value) != 1:
         raise ValueError("'%s' should be one character" % field)
 
+
 # Check whether a value is an integer not less than a given value.
 def _check_interger_minimum(value, minimum, field):
     if not isinstance(value, int):
@@ -182,6 +192,7 @@ def _check_interger_minimum(value, minimum, field):
     if value < minimum:
         raise ValueError("'%s' should be at least %d" % (field, minimum))
 
+
 # Check whether a value is a valid percentage.
 def _check_percent(value, field):
     if not isinstance(value, (int, float)):
@@ -189,6 +200,7 @@ def _check_percent(value, field):
 
     if value < 0 or value > 1:
         raise ValueError("'%s' should be in range [0, 1]" % field)
+
 
 # If parameter is present, check whether it is a string, and set global config with the given key.
 def _check_str_and_config_if_present(key, kwargs):
@@ -200,10 +212,12 @@ def _check_str_and_config_if_present(key, kwargs):
 
         globals()['custom_' + key] = value
 
+
 # Remove a key in a dict if that key exists.
 def _dict_remove_key_if_present(d, k):
     if k in d:
         d.pop(k)
+
 
 # Choose the value which will take effect from a list of layered settings.
 def _layered_choice(*args):
@@ -217,10 +231,12 @@ def _layered_choice(*args):
 
     return None
 
+
 # Print a string to stdout without appending '\n' and flush stdout.
 def _inline_write(s):
     sys.stdout.write(s)
     sys.stdout.flush()
+
 
 # Display a generic message label.
 def _print_label(color, mark, msg, newline=True, reset=True, **kwargs):
@@ -233,13 +249,13 @@ def _print_label(color, mark, msg, newline=True, reset=True, **kwargs):
     _check_mark(mark)
 
     if show_header:
-        if color_span == 0: # No color.
+        if color_span == 0:  # No color.
             out_string = header_pattern % mark + ' ' + msg
-        elif color_span == 1: # Color the mark.
+        elif color_span == 1:  # Color the mark.
             out_string = header_pattern % (color + mark + COLOR_RESET) + ' ' + msg
-        elif color_span == 2: # Color the header.
+        elif color_span == 2:  # Color the header.
             out_string = color + header_pattern % mark + COLOR_RESET + ' ' + msg
-        else: # Color the whole line.
+        else:  # Color the whole line.
             out_string = color + header_pattern % mark + ' ' + msg + (COLOR_RESET if reset else COLOR_NONE)
     else:
         if color_span <= 2:
@@ -252,6 +268,7 @@ def _print_label(color, mark, msg, newline=True, reset=True, **kwargs):
     else:
         _inline_write(out_string)
 
+
 # Display a generic input label.
 def _input_label(color, mark, msg, **kwargs):
     _print_label(color, mark, msg, newline=False, reset=False, **kwargs)
@@ -259,9 +276,10 @@ def _input_label(color, mark, msg, **kwargs):
     try:
         input_data = _input()
     finally:
-        _inline_write(COLOR_RESET) # Ensure color reset.
+        _inline_write(COLOR_RESET)  # Ensure color reset.
 
     return input_data
+
 
 # Calculate width of a generic message label.
 def _get_label_width(mark, msg, **kwargs):
@@ -275,12 +293,14 @@ def _get_label_width(mark, msg, **kwargs):
     else:
         return len(msg)
 
+
 # Perform the final print of a progress label.
 def _progress_final(color, mark, msg, **kwargs):
     if kwargs['erase']:
         _inline_write(' ' * _get_label_width(mark, msg, **kwargs) + '\r')
     else:
         _print_label(color, mark, msg, **kwargs)
+
 
 # Thread for progress animations in indeterminate modes.
 # We should take care of clearing excessive characters.
@@ -337,6 +357,7 @@ def _progress_print_thread(label, **kwargs):
         _progress_final(label.color, label.mark, msg + ' ' * kwargs['width'], **kwargs)
     elif label.mode == PROGRESS_MOVE:
         _progress_final(label.color, label.mark, msg + ' ' * (kwargs['width'] + 2), **kwargs)
+
 
 class ProgressLabel:
     def __init__(self, mode, color, mark, msg, **kwargs):
@@ -445,6 +466,7 @@ class ProgressLabel:
                 sys.stdout.write('\r')
                 _progress_final(self.color, self.mark, str(self.msg) + ' ' * cleanup_len, **self.config)
 
+
 # Public functions that users are supposed to call.
 
 def config(**kwargs):
@@ -470,6 +492,7 @@ def config(**kwargs):
     for label in all_labels:
         _check_str_and_config_if_present(label + '_mark', kwargs)
 
+
 def section(msg, **kwargs):
     '''Display a section label containing the given message.'''
 
@@ -479,6 +502,7 @@ def section(msg, **kwargs):
     _dict_remove_key_if_present(kwargs, 'mark')
 
     _print_label(color, mark, msg, **kwargs)
+
 
 def item(msg, **kwargs):
     '''Display an item label containing the given message.'''
@@ -490,6 +514,7 @@ def item(msg, **kwargs):
 
     _print_label(color, mark, msg, **kwargs)
 
+
 def success(msg, **kwargs):
     '''Display a success label containing the given message.'''
 
@@ -499,6 +524,7 @@ def success(msg, **kwargs):
     _dict_remove_key_if_present(kwargs, 'mark')
 
     _print_label(color, mark, msg, **kwargs)
+
 
 def warning(msg, **kwargs):
     '''Display a warning label containing the given message.'''
@@ -510,6 +536,7 @@ def warning(msg, **kwargs):
 
     _print_label(color, mark, msg, **kwargs)
 
+
 def error(msg, **kwargs):
     '''Display an error label containing the given message.'''
 
@@ -520,6 +547,7 @@ def error(msg, **kwargs):
 
     _print_label(color, mark, msg, **kwargs)
 
+
 def info(msg, **kwargs):
     '''Display an info label containing the given message.'''
 
@@ -529,6 +557,7 @@ def info(msg, **kwargs):
     _dict_remove_key_if_present(kwargs, 'mark')
 
     _print_label(color, mark, msg, **kwargs)
+
 
 def progress(msg, mode=PROGRESS_STATIC, **kwargs):
     '''Display a progress label containing the given message.'''
@@ -545,6 +574,7 @@ def progress(msg, mode=PROGRESS_STATIC, **kwargs):
     else:
         return ProgressLabel(mode, color, mark, msg, **kwargs)
 
+
 def plain(msg, **kwargs):
     '''Display a plain label containing the given message.'''
 
@@ -554,6 +584,7 @@ def plain(msg, **kwargs):
     _dict_remove_key_if_present(kwargs, 'mark')
 
     _print_label(color, mark, msg, **kwargs)
+
 
 def question(msg, **kwargs):
     '''Display a question label containing the given message and ask for user input.'''
@@ -565,6 +596,7 @@ def question(msg, **kwargs):
 
     return _input_label(color, mark, msg, **kwargs)
 
+
 def input(msg, **kwargs):
     '''Display an input label containing the given message and ask for user input.'''
 
@@ -574,6 +606,7 @@ def input(msg, **kwargs):
     _dict_remove_key_if_present(kwargs, 'mark')
 
     return _input_label(color, mark, msg, **kwargs)
+
 
 def password(msg, **kwargs):
     '''Display a password label containing the given message and ask for user input.'''
@@ -585,6 +618,7 @@ def password(msg, **kwargs):
 
     _print_label(color, mark, msg, newline=False, **kwargs)
     return getpass.getpass('')
+
 
 # Initialize colorama.
 colorama.init()

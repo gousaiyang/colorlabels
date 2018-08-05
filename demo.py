@@ -4,6 +4,7 @@ import sys
 import time
 import colorlabels as cl
 
+
 def welcome():
     cl.section('ColorLabels Demo')
     print()
@@ -14,12 +15,14 @@ def welcome():
     cl.item('5. Exit')
     print()
 
+
 def get_menu_option():
     option = ''
     while option not in ('1', '2', '3', '4', '5'):
         option = cl.input('Input your option: ').strip()
 
     return int(option)
+
 
 def overview():
     cl.section('Overview of Labels')
@@ -30,6 +33,7 @@ def overview():
     cl.progress('Downloading package, please wait...')
     cl.plain('Nothing interesting.')
     cl.question('A new version is present, would you like to update? (Y/N)')
+
 
 def animations():
     cl.section('Progress Animations')
@@ -63,6 +67,7 @@ def animations():
         time.sleep(1)
         p.update(1, ' 100% (5MB/5MB)')
 
+
 def demo1():
     cl.section('Demo 1')
 
@@ -91,6 +96,7 @@ def demo1():
     cl.section('Test Result')
     cl.info('3 out of 4 test cases passed.')
     cl.info('Pass rate: 75%')
+
 
 def demo2():
     cl.section('Demo 2')
@@ -123,6 +129,7 @@ def demo2():
     else:
         cl.warning('Update delayed!')
 
+
 def main():
     try:
         while True:
@@ -150,6 +157,7 @@ def main():
     except KeyboardInterrupt:
         print()
         cl.warning('Ctrl-C received, quitting.')
+
 
 if __name__ == '__main__':
     main()
