@@ -1,8 +1,8 @@
-import sys
-import time
 import getpass
 import itertools
+import sys
 import threading
+import time
 
 import colorama
 
@@ -13,7 +13,7 @@ _main_thread = threading.current_thread()
 
 
 def color_code(color_number):
-    '''Generate an ANSI escape sequence with the given color number.'''
+    '''Generate an ANSI escape sequence with the given color number or description string.'''
     return '\033[' + str(color_number) + 'm'
 
 
@@ -470,7 +470,7 @@ class ProgressLabel:
 # Public functions that users are supposed to call.
 
 def config(**kwargs):
-    '''Set up global configuration settings.'''
+    '''Set up runtime global settings.'''
 
     # Color span configuration.
     if 'color_span' in kwargs:
@@ -587,7 +587,7 @@ def plain(msg, **kwargs):
 
 
 def question(msg, **kwargs):
-    '''Display a question label containing the given message and ask for user input.'''
+    '''Display a question label containing the given message and prompt for user input.'''
 
     color = _layered_choice(kwargs.get('color'), custom_question_color, default_question_color)
     mark = _layered_choice(kwargs.get('mark'), custom_question_mark, default_question_mark)
@@ -598,7 +598,7 @@ def question(msg, **kwargs):
 
 
 def input(msg, **kwargs):
-    '''Display an input label containing the given message and ask for user input.'''
+    '''Display an input label containing the given message and prompt for user input.'''
 
     color = _layered_choice(kwargs.get('color'), custom_input_color, default_input_color)
     mark = _layered_choice(kwargs.get('mark'), custom_input_mark, default_input_mark)
@@ -609,7 +609,7 @@ def input(msg, **kwargs):
 
 
 def password(msg, **kwargs):
-    '''Display a password label containing the given message and ask for user input.'''
+    '''Display a password label containing the given message and prompt for user input.'''
 
     color = _layered_choice(kwargs.get('color'), custom_password_color, default_password_color)
     mark = _layered_choice(kwargs.get('mark'), custom_password_mark, default_password_mark)
