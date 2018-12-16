@@ -1,11 +1,13 @@
+from io import open
+
 from setuptools import setup
 
-with open('README.md', 'r') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
     name='colorlabels',
-    version='0.5.1',
+    version='0.5.2',
     description='Provides colorful and semantic labels in console. Tailored for message display and interaction in automated scripts.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -31,5 +33,5 @@ setup(
     ],
     keywords='console terminal color message display animation progress progressbar',
     py_modules=['colorlabels'],
-    install_requires=['colorama'],
+    install_requires=['colorama;platform_system=="Windows"'],
 )

@@ -1,10 +1,9 @@
 import getpass
 import itertools
+import platform
 import sys
 import threading
 import time
-
-import colorama
 
 # Deal with Python 2 & 3 compatibility problem.
 PY2 = sys.version_info[0] < 3
@@ -620,5 +619,6 @@ def password(msg, **kwargs):
     return getpass.getpass('')
 
 
-# Initialize colorama.
-colorama.init()
+if platform.system() == 'Windows':  # Initialize colorama on Windows.
+    import colorama
+    colorama.init()
