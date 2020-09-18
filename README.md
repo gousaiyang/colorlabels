@@ -11,11 +11,12 @@
 
 ## Demo
 
-<p><div align="center"><img src="https://github.com/gousaiyang/colorlabels/blob/master/img/overview.png" alt="Overview" /></div></p>
-<p><div align="center"><img src="https://github.com/gousaiyang/colorlabels/blob/master/img/animations.gif" alt="Animations" /></div></p>
+<p><div align="center"><img src="img/overview.png" alt="Overview" /></div></p>
+<p><div align="center"><img src="img/animations.gif" alt="Animations" /></div></p>
 
 ```python
 import time
+
 import colorlabels as cl
 
 cl.section('Overview of Labels')
@@ -44,7 +45,7 @@ with cl.progress('Downloading ', mode=cl.PROGRESS_DETERMINATE) as p:
 - Customizable.
 - Compatible.
   - Works on Unix-like Systems & Windows. (Based on [colorama](https://github.com/tartley/colorama))
-  - Works on both Python 2 & 3.
+  - Works on both Python 2 & 3 (Python 2 may not work well with unicode).
 
 ## Installation
 
@@ -72,7 +73,7 @@ A **label** is a line of message composed of a **header** and its **content**. A
 
 Here is an anatomy of a label:
 
-<p><div align="center"><img src="https://github.com/gousaiyang/colorlabels/blob/master/img/label_anatomy.png" alt="Label Anatomy"/></div></p>
+<p><div align="center"><img src="img/label_anatomy.png" alt="Label Anatomy"/></div></p>
 
 When using `colorlabels`, you will be able to customize a label's mark and color settings. However, the default settings should already look nice under most operating systems and terminals with a dark background.
 
@@ -95,7 +96,7 @@ The **color_span** option specifies the range that color covers in a label. Ther
 - 2: colors only the header
 - 3: colors the whole label (default)
 
-<p><div align="center"><img src="https://github.com/gousaiyang/colorlabels/blob/master/img/color_span.png" alt="Different Color Span"/></div></p>
+<p><div align="center"><img src="img/color_span.png" alt="Different Color Span"/></div></p>
 
 The default marks and colors for different kinds of labels are as follows:
 
@@ -299,6 +300,12 @@ Return:
 
 - For mode `PROGRESS_STATIC`, return `None`
 - For other modes, return a `ProgressLabel` object
+
+> **newline**()
+
+Print an empty line.
+
+Return: `None`
 
 #### `ProgressLabel` Methods
 

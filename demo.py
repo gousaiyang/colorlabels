@@ -1,6 +1,3 @@
-from __future__ import print_function
-
-import sys
 import time
 
 import colorlabels as cl
@@ -8,20 +5,19 @@ import colorlabels as cl
 
 def welcome():
     cl.section('ColorLabels Demo')
-    print()
+    cl.newline()
     cl.item('1. Overview of Labels')
     cl.item('2. Progress Animations')
     cl.item('3. Show Demo 1')
     cl.item('4. Show Demo 2')
     cl.item('5. Exit')
-    print()
+    cl.newline()
 
 
 def get_menu_option():
     option = ''
-    while option not in ('1', '2', '3', '4', '5'):
+    while option not in {'1', '2', '3', '4', '5'}:
         option = cl.input('Input your option: ').strip()
-
     return int(option)
 
 
@@ -116,7 +112,7 @@ def demo2():
         time.sleep(3)
 
     choice = ''
-    while choice.lower() not in ['y', 'n']:
+    while choice.lower() not in {'y', 'n'}:
         choice = cl.question('A new version is present, would you like to update? (Y/N)').strip()
 
     if choice.lower() == 'y':
@@ -136,10 +132,8 @@ def main():
         while True:
             welcome()
             option = get_menu_option()
-
             if option != 5:
-                print()
-
+                cl.newline()
             if option == 1:
                 overview()
             elif option == 2:
@@ -151,13 +145,12 @@ def main():
             else:
                 cl.plain('Bye!')
                 break
-
-            print()
+            cl.newline()
             cl.input('Press Enter to continue...')
-            print()
-    except KeyboardInterrupt:
-        print()
-        cl.warning('Ctrl-C received, quitting.')
+            cl.newline()
+    except (KeyboardInterrupt, EOFError):
+        cl.newline()
+        cl.warning('Ctrl-C or EOF received, quitting.')
 
 
 if __name__ == '__main__':

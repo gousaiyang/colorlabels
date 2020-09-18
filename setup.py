@@ -8,7 +8,8 @@ with open('README.md', 'r', encoding='utf-8') as f:
 setup(
     name='colorlabels',
     version='0.5.2',
-    description='Provides colorful and semantic labels in console. Tailored for message display and interaction in automated scripts.',
+    description='Provides colorful and semantic labels in console. '
+                'Tailored for message display and interaction in automated scripts.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/gousaiyang/colorlabels',
