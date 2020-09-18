@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='colorlabels',
-    version='0.5.2',
+    version='0.6.0',
     description='Provides colorful and semantic labels in console. '
                 'Tailored for message display and interaction in automated scripts.',
     long_description=long_description,
