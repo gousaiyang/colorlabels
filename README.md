@@ -11,8 +11,8 @@
 
 ## Demo
 
-<p><div align="center"><img src="img/overview.png" alt="Overview" /></div></p>
-<p><div align="center"><img src="img/animations.gif" alt="Animations" /></div></p>
+<p><div align="center"><img src="https://raw.githubusercontent.com/gousaiyang/colorlabels/master/img/overview.png" alt="Overview" /></div></p>
+<p><div align="center"><img src="https://raw.githubusercontent.com/gousaiyang/colorlabels/master/img/animations.gif" alt="Animations" /></div></p>
 
 ```python
 import time
@@ -73,7 +73,7 @@ A **label** is a line of message composed of a **header** and its **content**. A
 
 Here is an anatomy of a label:
 
-<p><div align="center"><img src="img/label_anatomy.png" alt="Label Anatomy"/></div></p>
+<p><div align="center"><img src="https://raw.githubusercontent.com/gousaiyang/colorlabels/master/img/label_anatomy.png" alt="Label Anatomy"/></div></p>
 
 When using `colorlabels`, you will be able to customize a label's mark and color settings. However, the default settings should already look nice under most operating systems and terminals with a dark background.
 
@@ -96,7 +96,7 @@ The **color_span** option specifies the range that color covers in a label. Ther
 - 2: colors only the header
 - 3: colors the whole label (default)
 
-<p><div align="center"><img src="img/color_span.png" alt="Different Color Span"/></div></p>
+<p><div align="center"><img src="https://raw.githubusercontent.com/gousaiyang/colorlabels/master/img/color_span.png" alt="Different Color Span"/></div></p>
 
 The default marks and colors for different kinds of labels are as follows:
 
