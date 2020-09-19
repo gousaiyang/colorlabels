@@ -1,5 +1,6 @@
 import getpass
 import itertools
+import os
 import platform
 import sys
 import threading
@@ -9,6 +10,18 @@ import time
 PY2 = sys.version_info[0] < 3
 _input = raw_input if PY2 else input
 _main_thread = threading.current_thread()
+
+
+# TTY detection and configuration.
+COLORLABELS_TTY = os.getenv('COLORLABELS_TTY')
+if COLORLABELS_TTY is None:
+    is_tty = sys.stdout.isatty()  # auto detect
+elif COLORLABELS_TTY.lower() in {'1', 'yes', 'y', 'true', 'on'}:
+    is_tty = True  # force tty mode
+elif COLORLABELS_TTY.lower() in {'0', 'no', 'n', 'false', 'off'}:
+    is_tty = False  # force non-tty mode (no color or progress animations)
+else:
+    raise ValueError('invalid value {!r} for COLORLABELS_TTY'.format(COLORLABELS_TTY))
 
 
 def color_code(color_number):
@@ -241,6 +254,9 @@ def _print_label(color, mark, msg, newline=True, reset_color=True, clear_line=Tr
     _check_color_span(color_span)
     _check_mark(mark)
 
+    if not is_tty:  # disable color output for non-tty mode
+        color_span = 0
+
     if show_header:
         if color_span == 0:  # No color.
             out_string = header_pattern.format(mark=mark) + ' ' + msg
@@ -257,13 +273,13 @@ def _print_label(color, mark, msg, newline=True, reset_color=True, clear_line=Tr
         else:
             out_string = color + msg + (COLOR_RESET if reset_color else COLOR_NONE)
 
-    if clear_line:
+    if clear_line and is_tty:
         out_string = CLEAR_LINE + out_string
 
     if newline:
-        print(out_string)
-    else:
-        _inline_write(out_string)
+        out_string += '\n'
+
+    _inline_write(out_string)
 
 
 # Display a generic input label.
@@ -272,7 +288,8 @@ def _input_label(color, mark, msg, **kwargs):
     try:
         input_data = _input()
     finally:
-        _inline_write(COLOR_RESET)  # Ensure color reset.
+        if is_tty:
+            _inline_write(COLOR_RESET)  # Ensure color reset.
     return input_data
 
 
@@ -355,6 +372,11 @@ class ProgressLabel:
         self.mark = mark
         self.msg = msg
 
+        if not is_tty:
+            # Fall back to a static label if not in a tty.
+            _print_label(color, mark, msg, **config)
+            return
+
         if mode in {PROGRESS_SPIN, PROGRESS_EXPAND, PROGRESS_MOVE}:
             self.print_thread = threading.Thread(target=_progress_print_thread, args=(self,), kwargs=config)
             self.stopped = False
@@ -381,6 +403,9 @@ class ProgressLabel:
         if not isinstance(text, str):
             raise TypeError("'text' should be a string")
 
+        if not is_tty:
+            return
+
         num_total = self.config['width']
         if num_total:
             num_done = int(round(num_total * percent))
@@ -399,6 +424,9 @@ class ProgressLabel:
 
     def stop(self):
         """Stop progress animation."""
+
+        if not is_tty:
+            return
 
         if self.mode in {PROGRESS_SPIN, PROGRESS_EXPAND, PROGRESS_MOVE}:
             if not self.stopped:
@@ -437,9 +465,14 @@ def config(**kwargs):
         _check_str_and_config_if_present(label + '_mark', kwargs, custom_marks, label)
 
 
-def _print_label_of_type(label_type, msg, **kwargs):
+def _get_color_and_mark(label_type, kwargs):
     color = _layered_choice(kwargs.pop('color', None), custom_colors[label_type], default_colors[label_type])
     mark = _layered_choice(kwargs.pop('mark', None), custom_marks[label_type], default_marks[label_type])
+    return color, mark
+
+
+def _print_label_of_type(label_type, msg, **kwargs):
+    color, mark = _get_color_and_mark(label_type, kwargs)
     _print_label(color, mark, msg, **kwargs)
 
 
@@ -475,8 +508,7 @@ def info(msg, **kwargs):
 
 def progress(msg, mode=PROGRESS_STATIC, **kwargs):
     """Display a progress label containing the given message."""
-    color = _layered_choice(kwargs.pop('color', None), custom_colors['progress'], default_colors['progress'])
-    mark = _layered_choice(kwargs.pop('mark', None), custom_marks['progress'], default_marks['progress'])
+    color, mark = _get_color_and_mark('progress', kwargs)
     _check_progress_mode(mode)
     if mode == PROGRESS_STATIC:
         return _print_label(color, mark, msg, **kwargs)
@@ -490,22 +522,19 @@ def plain(msg, **kwargs):
 
 def question(msg, **kwargs):
     """Display a question label containing the given message and prompt for user input."""
-    color = _layered_choice(kwargs.pop('color', None), custom_colors['question'], default_colors['question'])
-    mark = _layered_choice(kwargs.pop('mark', None), custom_marks['question'], default_marks['question'])
+    color, mark = _get_color_and_mark('question', kwargs)
     return _input_label(color, mark, msg, **kwargs)
 
 
 def input(msg, **kwargs):
     """Display an input label containing the given message and prompt for user input."""
-    color = _layered_choice(kwargs.pop('color', None), custom_colors['input'], default_colors['input'])
-    mark = _layered_choice(kwargs.pop('mark', None), custom_marks['input'], default_marks['input'])
+    color, mark = _get_color_and_mark('input', kwargs)
     return _input_label(color, mark, msg, **kwargs)
 
 
 def password(msg, **kwargs):
     """Display a password label containing the given message and prompt for user input."""
-    color = _layered_choice(kwargs.pop('color', None), custom_colors['password'], default_colors['password'])
-    mark = _layered_choice(kwargs.pop('mark', None), custom_marks['password'], default_marks['password'])
+    color, mark = _get_color_and_mark('password', kwargs)
     _print_label(color, mark, msg, newline=False, **kwargs)
     return getpass.getpass('')
 
@@ -515,7 +544,7 @@ def newline():
     _inline_write('\n')
 
 
-if platform.system() == 'Windows':  # Initialize colorama on Windows.
+if is_tty and platform.system() == 'Windows':  # Initialize colorama on Windows.
     import colorama
     colorama.init()
 

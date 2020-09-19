@@ -130,6 +130,10 @@ The static progress label only prints a message without any animation, just like
 
 For a detailed list of configurable options regarding progress labels, please refer to the corresponding content in the API Reference part of this documentation.
 
+#### TTY mode and non-TTY mode
+
+By default, `colorlabels` will detect whether the standard output is interactive (i.e. connected to a terminal/tty device). If it is not interactive, `colorlabels` will operate in non-TTY mode, where color output and progress animations will be disabled (i.e. no ANSI escape sequence printed, all progress labels become static), to make output parsing easier. However, you can override this behavior by setting the `COLORLABELS_TTY` environment variable. If `COLORLABELS_TTY` is set to one of `'1', 'yes', 'y', 'true', 'on'` (case-insensitive), this will force the use of TTY mode (i.e. treat standard output as interactive and display color output and progress animations as usual); if `COLORLABELS_TTY` is set to one of `'0', 'no', 'n', 'false', 'off'` (case-insensitive), this will force the use of non-TTY mode.
+
 ### API Reference
 
 #### Module-level Functions
